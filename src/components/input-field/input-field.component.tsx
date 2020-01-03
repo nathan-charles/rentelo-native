@@ -1,23 +1,10 @@
 import React from 'react';
-import { StyleSheet, TextInputProps } from 'react-native';
+import { TextInputProps } from 'react-native';
 import { Input } from 'native-base';
 
-import colors from '../../src/config/colors';
-import InputWrapper from './input-wrapper';
-
-const styles = StyleSheet.create({
-  inputStyle: {
-    height: 40,
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-  inputMultilineStyle: {
-    paddingTop: 10,
-    paddingBottom: 12,
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-});
+import colors from '../../../src/config/colors';
+import InputWrapper from '../input-wrapper';
+import styles from './input-field.styles';
 
 interface InputFieldProps extends TextInputProps {
   label?: string;
