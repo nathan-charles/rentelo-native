@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { AsyncStorage, StatusBar, SafeAreaView, View, Text } from 'react-native';
-// import { NavigationScreenComponent } from 'react-navigation';
-import { NavigationStackScreenProps, NavigationStackScreenComponent } from 'react-navigation-stack';
+import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import { Container, Button } from 'native-base';
 import { useLazyQuery } from '@apollo/react-hooks';
 
@@ -62,14 +61,20 @@ const Landing: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ n
           <Button full style={buttonStyle} onPress={() => navigation.navigate('Register')}>
             <Text style={buttonTextStyle}>SIGN UP</Text>
           </Button>
-          <View style={buttonDividerStyle} />
+          {/* <View style={buttonDividerStyle} />
           <Button full style={buttonStyle} onPress={() => navigation.navigate('Facebook')}>
             <Text style={buttonTextStyle}>FACEBOOK</Text>
-          </Button>
+          </Button> */}
         </View>
       </Container>
     </SafeAreaView>
   );
+};
+
+Landing.navigationOptions = () => {
+  return {
+    headerTitle: () => null,
+  };
 };
 
 export default Landing;

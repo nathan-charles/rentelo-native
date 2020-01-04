@@ -1,6 +1,6 @@
 import React from 'react';
 import { Keyboard, ActivityIndicator } from 'react-native';
-import { NavigationScreenComponent, NavigationScreenProps } from 'react-navigation';
+import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import { Container, Content, View, ListItem, Text, Button } from 'native-base';
 import { Formik } from 'formik';
 import { useMutation } from '@apollo/react-hooks';
@@ -59,7 +59,7 @@ const validationSchema = yup.object().shape({
     }),
 });
 
-const SetupMerchantAccount: NavigationScreenComponent<NavigationScreenProps> = ({ navigation }) => {
+const SetupMerchantAccount: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ navigation }) => {
   // Create Payment Account Mutation Hook
   const [createPaymentAccountMutation] = useMutation<
     CreatePayoutAccountMutationData,
@@ -311,7 +311,7 @@ const SetupMerchantAccount: NavigationScreenComponent<NavigationScreenProps> = (
 SetupMerchantAccount.navigationOptions = ({ navigation }) => {
   return {
     title: 'Payout Account',
-    headerLeft: <HeaderButton text="CANCEL" onPress={() => navigation.dismiss()} />,
+    headerLeft: () => <HeaderButton text="CANCEL" onPress={() => navigation.dismiss()} />,
   };
 };
 

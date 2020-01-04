@@ -1,6 +1,6 @@
 import React from 'react';
 import { AsyncStorage, Keyboard, SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
-import { NavigationScreenComponent, NavigationScreenProps } from 'react-navigation';
+import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import { Container, Content, Input, Button, Icon, Toast } from 'native-base';
 import { useMutation } from '@apollo/react-hooks';
 
@@ -11,7 +11,7 @@ import {
 } from '../../shared/graphql/user/mutations/login-mutation';
 import styles from './login.styles';
 
-const Login: NavigationScreenComponent<NavigationScreenProps> = ({ navigation }) => {
+const Login: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ navigation }) => {
   // State
   const [username, setUsername] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
@@ -119,6 +119,12 @@ const Login: NavigationScreenComponent<NavigationScreenProps> = ({ navigation })
       </Container>
     </SafeAreaView>
   );
+};
+
+Login.navigationOptions = () => {
+  return {
+    headerTitle: () => null,
+  };
 };
 
 export default Login;
