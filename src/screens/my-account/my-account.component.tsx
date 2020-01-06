@@ -1,11 +1,13 @@
 import React from 'react';
-import { Image } from 'react-native';
-import { NavigationScreenComponent, NavigationScreenProps } from 'react-navigation';
+import { AsyncStorage, Image } from 'react-native';
+import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import { Container, Content, Text, Body, Button, Icon, Left, List, ListItem, Right, View } from 'native-base';
 // import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 
 import { CURRENT_USER_QUERY, CurrentUserQueryData } from '../../shared/graphql/user/queries/current-user-query';
+import { LOGOUT_MUTATION } from '../../shared/graphql/user/mutations/logout-mutation';
+
 import colors from '../../../src/config/colors';
 // import images from 'src/config/images';
 // import customMapStyle from 'src/config/google-map-style';
@@ -15,9 +17,38 @@ import styles from './my-account.styles';
 //   // navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 // }
 
-const MyAccount: NavigationScreenComponent<NavigationScreenProps> = ({ navigation }) => {
+const MyAccount: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ navigation }) => {
   // Fetch current user query hook
   const { data } = useQuery<CurrentUserQueryData>(CURRENT_USER_QUERY);
+
+  // Logout Mutation Hook
+  const [logOutMutation] = useMutation(LOGOUT_MUTATION);
+
+  const handleLogout = async () => {
+    try {
+      // Call LogIn Mutation
+      const result = await logOutMutation();
+
+      if (result) {
+        const { data } = result;
+        if (data) {
+          console.log('Data', data);
+
+          // console.log(sessionToken);
+
+          // Set session token in AsyncStorage
+          await AsyncStorage.removeItem('token');
+
+          // Navigate to App
+          navigation.navigate('LoginRegistration');
+        }
+      }
+    } catch (error) {
+      console.log(error);
+
+      // Toast.show({ text: error.graphQLErrors[0].message, buttonText: 'Ok', position: 'bottom' });
+    }
+  };
 
   if (data == undefined) {
     return null;
@@ -160,7 +191,7 @@ const MyAccount: NavigationScreenComponent<NavigationScreenProps> = ({ navigatio
               <Icon name="arrow-forward" />
             </Right>
           </ListItem>
-          <ListItem last icon>
+          <ListItem last icon onPress={handleLogout}>
             <Left>
               <Icon name="md-power" />
             </Left>
