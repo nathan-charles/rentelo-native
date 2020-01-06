@@ -19,14 +19,14 @@ import styles from './my-account.styles';
 
 const MyAccount: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ navigation }) => {
   // Fetch current user query hook
-  const { data } = useQuery<CurrentUserQueryData>(CURRENT_USER_QUERY);
+  const { data: currentUserData } = useQuery<CurrentUserQueryData>(CURRENT_USER_QUERY);
 
   // Logout Mutation Hook
   const [logOutMutation] = useMutation(LOGOUT_MUTATION);
 
   const handleLogout = async () => {
     try {
-      // Call LogIn Mutation
+      // Call LogOut Mutation
       const result = await logOutMutation();
 
       if (result) {
@@ -36,10 +36,10 @@ const MyAccount: NavigationStackScreenComponent<NavigationStackScreenProps> = ({
 
           // console.log(sessionToken);
 
-          // Set session token in AsyncStorage
+          // Remove session token in AsyncStorage
           await AsyncStorage.removeItem('token');
 
-          // Navigate to App
+          // Navigate to Login / Landing
           navigation.navigate('LoginRegistration');
         }
       }
@@ -50,15 +50,15 @@ const MyAccount: NavigationStackScreenComponent<NavigationStackScreenProps> = ({
     }
   };
 
-  if (data == undefined) {
-    return null;
-  }
+  // if (currentUserData == undefined) {
+  //   return null;
+  // }
 
   // Destructure styles
   const { buttonEditProfileStyle, textNameStyle } = styles;
 
   // Get current user
-  const { viewer } = data;
+  const { viewer } = currentUserData;
 
   // Get payout account
   const { payoutAccount, profile } = viewer;
