@@ -50,9 +50,9 @@ const MyAccount: NavigationStackScreenComponent<NavigationStackScreenProps> = ({
     }
   };
 
-  // if (currentUserData == undefined) {
-  //   return null;
-  // }
+  if (currentUserData == undefined) {
+    return null;
+  }
 
   // Destructure styles
   const { buttonEditProfileStyle, textNameStyle } = styles;

@@ -61,10 +61,6 @@ const Landing: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ n
           <Button full style={buttonStyle} onPress={() => navigation.navigate('Register')}>
             <Text style={buttonTextStyle}>SIGN UP</Text>
           </Button>
-          {/* <View style={buttonDividerStyle} />
-          <Button full style={buttonStyle} onPress={() => navigation.navigate('Facebook')}>
-            <Text style={buttonTextStyle}>FACEBOOK</Text>
-          </Button> */}
         </View>
       </Container>
     </SafeAreaView>

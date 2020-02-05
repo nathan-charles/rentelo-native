@@ -1,6 +1,6 @@
 import React from 'react';
 import { Keyboard, ActivityIndicator, Alert, Image } from 'react-native';
-import { NavigationScreenComponent, NavigationScreenProps } from 'react-navigation';
+import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import { Container, Content, View, ListItem, Text, Button } from 'native-base';
 import { Formik } from 'formik';
 import { useQuery, useMutation } from '@apollo/react-hooks';
@@ -76,7 +76,7 @@ const moneyInputOptions = {
   precision: 0,
 };
 
-const EditItem: NavigationScreenComponent<NavigationScreenProps> = ({ navigation }) => {
+const EditItem: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ navigation }) => {
   // State
   const [fileData, setFileData] = React.useState<string>('');
   const [imageSource, setImageSource] = React.useState<string>('');
@@ -90,7 +90,7 @@ const EditItem: NavigationScreenComponent<NavigationScreenProps> = ({ navigation
 
   // Get current user
   const {
-    viewer: { objectId: userObjectId },
+    viewer: { id: userObjectId },
   } = data;
 
   // Upload File Mutation Hook
@@ -101,27 +101,29 @@ const EditItem: NavigationScreenComponent<NavigationScreenProps> = ({ navigation
 
   const handleAddAttachment = async () => {
     try {
-      /*
       const image = await ImagePicker.openPicker({
         width: 300,
         height: 400,
         cropping: true,
       });
+
       // Destructure image result from picker
       const { path, sourceURL, filename, mime, data } = image;
+
       // Create File object
       const file = new ReactNativeFile({
         uri: path,
         type: mime,
         name: filename,
       });
+
       setImageSource(path);
       setFileData(JSON.stringify(file, null, 2));
+
       // Upload file
       const res = await uploadFileMutation({ variables: { upload: file } });
       console.log(JSON.stringify(res, null, 2));
       Alert.alert('hell yeah');
-      */
     } catch (error) {
       Alert.alert(error.message);
       console.log(JSON.stringify(error, null, 2));
@@ -156,13 +158,13 @@ const EditItem: NavigationScreenComponent<NavigationScreenProps> = ({ navigation
               if (isNew) {
                 await createItemMutation({
                   variables: {
-                    fields: { ...fields, owner: { __type: 'Pointer', objectId: userObjectId, className: '_User' } },
+                    fields: { ...fields, owner: { __type: 'Pointer', id: userObjectId, className: '_User' } },
                   },
                 });
               } else {
                 await createItemMutation({
                   variables: {
-                    fields: { ...fields, owner: { __type: 'Pointer', objectId: userObjectId, className: '_User' } },
+                    fields: { ...fields, owner: { __type: 'Pointer', id: userObjectId, className: '_User' } },
                   },
                 });
               }
@@ -264,8 +266,8 @@ const EditItem: NavigationScreenComponent<NavigationScreenProps> = ({ navigation
 EditItem.navigationOptions = ({ navigation }) => {
   return {
     title: 'Edit Item',
-    headerLeft: <HeaderButton text="CANCEL" onPress={() => navigation.dismiss()} />,
-    headerRight: <HeaderButton dark text="SAVE" onPress={() => navigation.dismiss()} />,
+    headerLeft: () => <HeaderButton text="CANCEL" onPress={() => navigation.dismiss()} />,
+    headerRight: () => <HeaderButton dark text="SAVE" onPress={() => navigation.dismiss()} />,
   };
 };
 

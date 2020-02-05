@@ -83,6 +83,7 @@ const Login: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ nav
           <View style={inputContainerStyle}>
             <Icon type="MaterialIcons" name="mail" style={inputIconStyle} />
             <Input
+              testID="input-email"
               selectionColor="#FFF"
               placeholder="Email Address"
               style={inputStyle}
@@ -98,6 +99,7 @@ const Login: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ nav
           <View style={inputContainerStyle}>
             <Icon type="MaterialIcons" name="lock" style={inputIconStyle} />
             <Input
+              testID="input-password"
               selectionColor="#FFF"
               placeholder="Password"
               secureTextEntry
@@ -112,7 +114,7 @@ const Login: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ nav
           <TouchableOpacity style={buttonForgotPasswordStyle}>
             <Text style={buttonForgotPasswordTextStyle}>Forgot Password?</Text>
           </TouchableOpacity>
-          <Button block style={buttonStyle} onPress={handleLogin}>
+          <Button testID="button-login" block style={buttonStyle} onPress={handleLogin}>
             <Text style={buttonTextStyle}>LOG IN</Text>
           </Button>
         </Content>
