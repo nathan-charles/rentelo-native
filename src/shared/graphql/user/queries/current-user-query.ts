@@ -9,18 +9,20 @@ export interface ExternalAccount {
 
 export interface CurrentUserQueryData {
   viewer: {
-    id: string;
-    username: string;
-    payoutAccount: {
-      externalAccounts: [ExternalAccount];
-      payoutsEnabled: boolean;
-      accountId: string;
-    };
-    profile: {
-      firstName: string;
-      lastName: string;
-      city: string;
-      state: string;
+    user: {
+      id: string;
+      username: string;
+      payoutAccount: {
+        externalAccounts: [ExternalAccount];
+        payoutsEnabled: boolean;
+        accountId: string;
+      };
+      profile: {
+        firstName: string;
+        lastName: string;
+        city: string;
+        state: string;
+      };
     };
   };
 }
@@ -28,18 +30,20 @@ export interface CurrentUserQueryData {
 const CURRENT_USER_QUERY = gql`
   query CurrentUserQuery {
     viewer {
-      id
-      username
-      payoutAccount {
-        # externalAccounts
-        payoutsEnabled
-        accountId
-      }
-      profile {
-        firstName
-        lastName
-        city
-        state
+      user {
+        id
+        username
+        payoutAccount {
+          # externalAccounts
+          payoutsEnabled
+          accountId
+        }
+        profile {
+          firstName
+          lastName
+          city
+          state
+        }
       }
     }
   }

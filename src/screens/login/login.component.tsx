@@ -1,9 +1,19 @@
 import React from 'react';
-import { AsyncStorage, Keyboard, SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
+import {
+  ActivityIndicator,
+  AsyncStorage,
+  Keyboard,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
-import { Container, Content, Input, Button, Icon, Toast } from 'native-base';
+import { Button, Text, TextInput, Snackbar } from 'react-native-paper';
 import { useMutation } from '@apollo/react-hooks';
 
+import theme from './../../config/theme';
 import {
   LOGIN_MUTATION,
   LoginMutationData,
@@ -13,14 +23,12 @@ import styles from './login.styles';
 
 const Login: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ navigation }) => {
   // State
+  const [error, setError] = React.useState<string>(undefined);
   const [username, setUsername] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
 
   // Login Mutation Hook
-  const [logInMutation] = useMutation<LoginMutationData, LoginMutationVariables>(LOGIN_MUTATION, {
-    variables: { username: username.toLowerCase().trim(), password },
-    // fetchPolicy: 'cache-and-network',
-  });
+  const [logInMutation, { loading }] = useMutation<LoginMutationData, LoginMutationVariables>(LOGIN_MUTATION);
 
   const handleLogin = async () => {
     // Dismiss Keyboard
@@ -28,14 +36,21 @@ const Login: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ nav
 
     try {
       // Call LogIn Mutation
-      const result = await logInMutation();
+      const result = await logInMutation({
+        variables: {
+          username: username.toLowerCase().trim(),
+          password,
+        },
+      });
 
       if (result) {
         const { data } = result;
         if (data) {
           console.log('Data', data);
           const {
-            logIn: { sessionToken },
+            logIn: {
+              viewer: { sessionToken },
+            },
           } = data;
 
           console.log(sessionToken);
@@ -48,9 +63,7 @@ const Login: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ nav
         }
       }
     } catch (error) {
-      console.log(error);
-
-      Toast.show({ text: error.graphQLErrors[0].message, buttonText: 'Ok', position: 'bottom' });
+      setError(error.graphQLErrors[0].message);
     }
   };
 
@@ -62,18 +75,20 @@ const Login: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ nav
     textAppNameStyle,
     textPoweredByStyle,
     inputContainerStyle,
-    inputIconStyle,
-    inputStyle,
     buttonTextStyle,
-    buttonStyle,
+    buttonContentStyle,
     buttonForgotPasswordStyle,
     buttonForgotPasswordTextStyle,
   } = styles;
 
   return (
     <SafeAreaView style={safeAreaStyle}>
-      <Container style={containerStyle}>
-        <Content contentContainerStyle={contentStyle}>
+      <KeyboardAvoidingView style={containerStyle} behavior="padding">
+        <ScrollView
+          contentContainerStyle={contentStyle}
+          keyboardShouldPersistTaps="always"
+          removeClippedSubviews={false}
+        >
           <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 40 }}>
             <View>
               <Text style={textAppNameStyle}>Rentelo</Text>
@@ -81,12 +96,11 @@ const Login: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ nav
             </View>
           </View>
           <View style={inputContainerStyle}>
-            <Icon type="MaterialIcons" name="mail" style={inputIconStyle} />
-            <Input
+            <TextInput
               testID="input-email"
-              selectionColor="#FFF"
-              placeholder="Email Address"
-              style={inputStyle}
+              mode="outlined"
+              selectionColor="#F63440"
+              label="Email Address"
               placeholderTextColor="#F6868D"
               autoCorrect={false}
               autoCapitalize="none"
@@ -97,13 +111,12 @@ const Login: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ nav
             />
           </View>
           <View style={inputContainerStyle}>
-            <Icon type="MaterialIcons" name="lock" style={inputIconStyle} />
-            <Input
+            <TextInput
               testID="input-password"
-              selectionColor="#FFF"
-              placeholder="Password"
+              mode="outlined"
+              selectionColor="#F63440"
+              label="Password"
               secureTextEntry
-              style={inputStyle}
               placeholderTextColor="#F6868D"
               autoCorrect={false}
               keyboardAppearance="dark"
@@ -114,17 +127,34 @@ const Login: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ nav
           <TouchableOpacity style={buttonForgotPasswordStyle}>
             <Text style={buttonForgotPasswordTextStyle}>Forgot Password?</Text>
           </TouchableOpacity>
-          <Button testID="button-login" block style={buttonStyle} onPress={handleLogin}>
-            <Text style={buttonTextStyle}>LOG IN</Text>
-          </Button>
-        </Content>
-      </Container>
+          {loading ? (
+            <ActivityIndicator color={theme.colors.primary} size="large" />
+          ) : (
+            <Button testID="button-login" contentStyle={buttonContentStyle} mode="contained" onPress={handleLogin}>
+              <Text style={buttonTextStyle}>LOG IN</Text>
+            </Button>
+          )}
+        </ScrollView>
+        <Snackbar
+          visible={error !== undefined}
+          onDismiss={() => setError(undefined)}
+          action={{
+            label: 'Dismiss',
+            onPress: () => {
+              setError(undefined);
+            },
+          }}
+        >
+          {error}
+        </Snackbar>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
 Login.navigationOptions = () => {
   return {
+    headerBackTitle: null,
     headerTitle: () => null,
   };
 };

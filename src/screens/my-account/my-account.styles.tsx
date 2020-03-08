@@ -3,6 +3,13 @@ import { StyleSheet } from 'react-native';
 import colors from '../../../src/config/colors';
 
 const styles = StyleSheet.create({
+  containerStyle: {
+    flex: 1,
+    backgroundColor: '#F3F3F3',
+  },
+  contentStyle: {
+    flexGrow: 1,
+  },
   imageProfilePhoto: {
     width: 100,
     height: 100,
@@ -14,15 +21,18 @@ const styles = StyleSheet.create({
   },
   buttonEditProfileStyle: {
     alignSelf: 'flex-end',
-    marginTop: -30,
-    marginRight: 15,
+    marginTop: 0,
   },
   textNameStyle: {
     marginTop: 10,
-    marginLeft: 15,
-    marginBottom: 0,
+    marginBottom: 10,
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  listItemStyle: {
+    backgroundColor: '#FFF',
+    paddingVertical: 0,
+    paddingHorizontal: 0,
   },
 });
 

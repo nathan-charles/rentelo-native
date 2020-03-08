@@ -4,6 +4,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { Icon } from 'native-base';
 
+import theme from './config/theme';
+
 import Landing from './screens/landing';
 import Login from './screens/login';
 import Messages from './screens/messages';
@@ -33,7 +35,7 @@ export const LoginRegistrationStack = createStackNavigator(
     initialRouteName: 'Landing',
     defaultNavigationOptions: {
       headerTransparent: true,
-      headerTintColor: '#FFF',
+      headerTintColor: theme.colors.primary,
     },
   }
 );

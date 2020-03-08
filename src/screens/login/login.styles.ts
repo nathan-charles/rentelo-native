@@ -1,12 +1,15 @@
 import { StyleSheet } from 'react-native';
 
+import theme from './../../config/theme';
+
 const styles = StyleSheet.create({
   safeAreaStyle: {
     flex: 1,
     backgroundColor: '#c42933',
   },
   containerStyle: {
-    backgroundColor: '#F63440',
+    flex: 1,
+    backgroundColor: '#FFF',
   },
   contentStyle: {
     padding: 15,
@@ -14,55 +17,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   textAppNameStyle: {
-    color: '#FFF',
+    color: '#F63440',
     fontSize: 60,
     fontWeight: 'bold',
   },
   textPoweredByStyle: {
     marginTop: -10,
-    color: '#FFF',
+    color: theme.colors.primary,
     fontSize: 15,
     fontWeight: 'bold',
     fontStyle: 'italic',
     alignSelf: 'flex-end',
   },
   inputContainerStyle: {
-    marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#c42933',
-    borderRadius: 5,
-    paddingVertical: 0,
-    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
-  inputStyle: {
-    color: '#FFF',
-  },
-  inputIconStyle: {
-    marginLeft: 0,
-    color: '#F6868D',
-  },
-  buttonGroupStyle: {
-    flexDirection: 'row',
-  },
-  buttonDividerStyle: {
-    width: 1,
-  },
-  buttonStyle: {
-    marginTop: 20,
-    backgroundColor: '#FFF',
+  buttonContentStyle: {
+    height: 44,
   },
   buttonTextStyle: {
-    color: '#F63440',
-    fontSize: 16,
+    color: '#FFF',
     fontWeight: 'bold',
   },
   buttonForgotPasswordStyle: {
-    marginTop: 15,
+    paddingVertical: 10,
     alignSelf: 'flex-end',
   },
   buttonForgotPasswordTextStyle: {
-    color: '#FFF',
+    color: theme.colors.primary,
     fontSize: 14,
     fontWeight: '500',
   },

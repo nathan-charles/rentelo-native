@@ -1,12 +1,15 @@
 import { StyleSheet } from 'react-native';
 
+import theme from './../../config/theme';
+
 const styles = StyleSheet.create({
   safeAreaStyle: {
     flex: 1,
     backgroundColor: '#c42933',
   },
   containerStyle: {
-    backgroundColor: '#F63440',
+    flex: 1,
+    backgroundColor: theme.colors.primary,
   },
   textAppNameStyle: {
     color: '#FFF',
@@ -22,20 +25,20 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   buttonGroupStyle: {
+    padding: 8,
     flexDirection: 'row',
   },
   buttonDividerStyle: {
-    width: 1,
+    width: 8,
   },
   buttonStyle: {
-    flex: 1,
+    // flex: 1,
     height: 60,
-    backgroundColor: '#c42933',
   },
   buttonTextStyle: {
     color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+    // fontSize: 16,
+    // fontWeight: 'bold',
   },
 });
 

@@ -2,13 +2,15 @@ import gql from 'graphql-tag';
 
 const LOGOUT_MUTATION = gql`
   mutation LogoutMutation {
-    logOut {
-      # id
-      # updatedAt
-      # createdAt
-      # username
-      sessionToken
-      # ACL
+    logOut(input: { clientMutationId: null }) {
+      viewer {
+        # id
+        # updatedAt
+        # createdAt
+        # username
+        sessionToken
+        # ACL
+      }
     }
   }
 `;

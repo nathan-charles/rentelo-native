@@ -1,7 +1,7 @@
 import React from 'react';
-import { AsyncStorage, Image } from 'react-native';
+import { AsyncStorage, ScrollView, View } from 'react-native';
 import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
-import { Container, Content, Text, Body, Button, Icon, Left, List, ListItem, Right, View } from 'native-base';
+import { Button, Divider, List, Text } from 'react-native-paper';
 // import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 
@@ -9,6 +9,7 @@ import { CURRENT_USER_QUERY, CurrentUserQueryData } from '../../shared/graphql/u
 import { LOGOUT_MUTATION } from '../../shared/graphql/user/mutations/logout-mutation';
 
 import colors from '../../../src/config/colors';
+import theme from '../../config/theme';
 // import images from 'src/config/images';
 // import customMapStyle from 'src/config/google-map-style';
 import styles from './my-account.styles';
@@ -55,156 +56,122 @@ const MyAccount: NavigationStackScreenComponent<NavigationStackScreenProps> = ({
   }
 
   // Destructure styles
-  const { buttonEditProfileStyle, textNameStyle } = styles;
+  const { containerStyle, contentStyle, buttonEditProfileStyle, textNameStyle, listItemStyle } = styles;
 
   // Get current user
   const { viewer } = currentUserData;
 
   // Get payout account
-  const { payoutAccount, profile } = viewer;
+  const { payoutAccount, profile } = viewer.user;
 
   // Get profile
   const { firstName, lastName, city, state } = profile;
 
   return (
-    <Container>
-      <Content>
-        <View style={{ backgroundColor: '#FFFFFF' }}>
+    <View style={containerStyle}>
+      <ScrollView contentContainerStyle={contentStyle}>
+        <View style={{ padding: 15, backgroundColor: '#FFF' }}>
           {/* {this.renderPhoto()} */}
-          <Button small style={buttonEditProfileStyle} onPress={() => navigation.navigate('EditProfile')}>
+          <Button mode="outlined" style={buttonEditProfileStyle} onPress={() => navigation.navigate('EditProfile')}>
             <Text>EDIT PROFILE</Text>
           </Button>
           <Text style={textNameStyle}>{`${firstName} ${lastName}`}</Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={{ fontSize: 17, color: colors.secondaryTextColor }}>Location:</Text>
+            <Text style={{ marginLeft: 10, fontSize: 17, color: colors.primaryColor }}>
+              {city && state ? `${city}, ${state}` : 'Not Set'}
+            </Text>
+          </View>
+          <View style={{ flexDirection: 'row', marginTop: 5 }}>
+            <Text style={{ fontSize: 17, color: colors.secondaryTextColor }}>Member Since:</Text>
+            <Text style={{ marginLeft: 10, fontSize: 17 }}>Dec, 2017</Text>
+          </View>
         </View>
-        <List style={{ backgroundColor: '#FFF' }}>
-          <ListItem last>
-            <View>
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={{ fontSize: 17, color: colors.secondaryTextColor }}>Location:</Text>
-                <Text style={{ marginLeft: 10, fontSize: 17, color: colors.primaryColor }}>
-                  {city && state ? `${city}, ${state}` : 'Not Set'}
-                </Text>
-              </View>
-              <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                <Text style={{ fontSize: 17, color: colors.secondaryTextColor }}>Member Since:</Text>
-                <Text style={{ marginLeft: 10, fontSize: 17 }}>Dec, 2017</Text>
-              </View>
-            </View>
-          </ListItem>
-          <ListItem itemDivider>
-            <Text>PAYMENTS & PAYOUTS</Text>
-          </ListItem>
-          <ListItem first icon>
-            <Left>
-              <Icon name="md-card" type="Ionicons" />
-            </Left>
-            <Body>
-              <Text>Payments</Text>
-              <Text note>Please add a Credit or Debit Card</Text>
-            </Body>
-            <Right>
-              <Icon name="arrow-forward" />
-            </Right>
-          </ListItem>
-          {payoutAccount ? (
-            <ListItem icon onPress={() => navigation.navigate('SetupMerchantAccount')}>
-              <Left>
-                <Icon name="md-card" />
-              </Left>
-              <Body>
-                <Text>Payouts</Text>
-                <Text note>Update Banking</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-          ) : (
-            <ListItem icon onPress={() => navigation.navigate('SetupMerchantAccount')}>
-              <Left>
-                <Icon name="md-card" />
-              </Left>
-              <Body>
-                <Text>Payouts</Text>
-                <Text note>Setup Merchant Account</Text>
-              </Body>
-              <Right>
-                <Icon name="arrow-forward" />
-              </Right>
-            </ListItem>
-          )}
-          <ListItem last icon>
-            <Left>
-              <Icon name="md-calendar" />
-            </Left>
-            <Body>
-              <Text>Transaction History</Text>
-            </Body>
-            <Right>
-              <Icon name="arrow-forward" />
-            </Right>
-          </ListItem>
-          <ListItem itemDivider>
-            <Text>SETTINGS</Text>
-          </ListItem>
-          <ListItem icon>
-            <Left>
-              <Icon name="md-mail" />
-            </Left>
-            <Body>
-              <Text>Change Email</Text>
-            </Body>
-            <Right>
-              <Icon name="arrow-forward" />
-            </Right>
-          </ListItem>
-          <ListItem icon>
-            <Left>
-              <Icon name="md-unlock" />
-            </Left>
-            <Body>
-              <Text>Change Password</Text>
-            </Body>
-            <Right>
-              <Icon name="arrow-forward" />
-            </Right>
-          </ListItem>
-          <ListItem icon>
-            <Left>
-              <Icon name="md-paper" />
-            </Left>
-            <Body>
-              <Text>Terms & Conditions</Text>
-            </Body>
-            <Right>
-              <Icon name="arrow-forward" />
-            </Right>
-          </ListItem>
-          <ListItem icon>
-            <Left>
-              <Icon name="md-paper" />
-            </Left>
-            <Body>
-              <Text>Privacy Policy</Text>
-            </Body>
-            <Right>
-              <Icon name="arrow-forward" />
-            </Right>
-          </ListItem>
-          <ListItem last icon onPress={handleLogout}>
-            <Left>
-              <Icon name="md-power" />
-            </Left>
-            <Body>
-              <Text>Log Out</Text>
-            </Body>
-          </ListItem>
-          <ListItem itemDivider>
-            <Text>Rentelo v1.0.0 (1)</Text>
-          </ListItem>
-        </List>
-      </Content>
-    </Container>
+        <View></View>
+
+        {/* Payments & Payouts */}
+        <List.Section>
+          <List.Subheader>PAYMENTS & PAYOUTS</List.Subheader>
+          <Divider />
+          <List.Item
+            style={listItemStyle}
+            title="Payments"
+            description="Please add a Credit or Debit Card"
+            left={() => <List.Icon color={theme.colors.primary} icon="credit-card" />}
+            right={() => <List.Icon color={theme.colors.primary} icon="chevron-right" />}
+          />
+          <Divider />
+          <List.Item
+            style={listItemStyle}
+            title="Payouts"
+            description="Setup Merchant Account"
+            onPress={() => navigation.navigate('SetupMerchantAccount')}
+            left={() => <List.Icon color={theme.colors.primary} icon="credit-card" />}
+            right={() => <List.Icon color={theme.colors.primary} icon="chevron-right" />}
+          />
+          <Divider />
+          <List.Item
+            style={listItemStyle}
+            title="Transaction History"
+            onPress={() => navigation.navigate('SetupMerchantAccount')}
+            left={() => <List.Icon color={theme.colors.primary} icon="calendar-outline" />}
+            right={() => <List.Icon color={theme.colors.primary} icon="chevron-right" />}
+          />
+        </List.Section>
+
+        {/* Settings */}
+        <List.Section>
+          <List.Subheader>SETTINGS</List.Subheader>
+          <Divider />
+          <List.Item
+            style={listItemStyle}
+            title="Change Email"
+            left={() => <List.Icon color={theme.colors.primary} icon="lock-open-outline" />}
+            right={() => <List.Icon color={theme.colors.primary} icon="chevron-right" />}
+          />
+          <Divider />
+          <List.Item
+            style={listItemStyle}
+            title="Change Password"
+            left={() => <List.Icon color={theme.colors.primary} icon="lock-open-outline" />}
+            right={() => <List.Icon color={theme.colors.primary} icon="chevron-right" />}
+          />
+          <Divider />
+          <List.Item
+            style={listItemStyle}
+            title="Log Out"
+            onPress={handleLogout}
+            left={() => <List.Icon color={theme.colors.primary} icon="power" />}
+          />
+        </List.Section>
+
+        {/* Information */}
+        <List.Section>
+          <List.Subheader>INFORMATION</List.Subheader>
+          <Divider />
+          <List.Item
+            style={listItemStyle}
+            title="Terms & Conditions"
+            left={() => <List.Icon color={theme.colors.primary} icon="file-document-outline" />}
+            right={() => <List.Icon color={theme.colors.primary} icon="chevron-right" />}
+          />
+          <Divider />
+          <List.Item
+            style={listItemStyle}
+            title="Privacy Policy"
+            left={() => <List.Icon color={theme.colors.primary} icon="file-document-outline" />}
+            right={() => <List.Icon color={theme.colors.primary} icon="chevron-right" />}
+          />
+          <Divider />
+          <List.Item
+            style={listItemStyle}
+            title="Version"
+            description="Rentelo v1.0.0 (1)"
+            left={() => <List.Icon color={theme.colors.primary} icon="information-outline" />}
+          />
+        </List.Section>
+      </ScrollView>
+    </View>
   );
 };
 

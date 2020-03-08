@@ -2,7 +2,9 @@ import gql from 'graphql-tag';
 
 export interface LoginMutationData {
   logIn: {
-    sessionToken: string;
+    viewer: {
+      sessionToken: string;
+    };
   };
 }
 
@@ -13,8 +15,10 @@ export interface LoginMutationVariables {
 
 const LOGIN_MUTATION = gql`
   mutation LoginMutation($username: String!, $password: String!) {
-    logIn(fields: { username: $username, password: $password }) {
-      sessionToken
+    logIn(input: { username: $username, password: $password }) {
+      viewer {
+        sessionToken
+      }
     }
   }
 `;

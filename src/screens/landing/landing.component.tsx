@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { AsyncStorage, StatusBar, SafeAreaView, View, Text } from 'react-native';
+import { AsyncStorage, StatusBar, SafeAreaView, View } from 'react-native';
 import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
-import { Container, Button } from 'native-base';
+import { Button, Text } from 'react-native-paper';
 import { useLazyQuery } from '@apollo/react-hooks';
 
 import { CURRENT_USER_QUERY, CurrentUserQueryData } from '../../shared/graphql/user/queries/current-user-query';
@@ -45,7 +45,7 @@ const Landing: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ n
 
   return (
     <SafeAreaView style={safeAreaStyle}>
-      <Container style={containerStyle}>
+      <View style={containerStyle}>
         <StatusBar barStyle="light-content" />
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <View>
@@ -54,21 +54,32 @@ const Landing: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ n
           </View>
         </View>
         <View style={buttonGroupStyle}>
-          <Button full style={buttonStyle} onPress={() => navigation.navigate('Login')}>
+          <Button
+            mode="contained"
+            style={{ flex: 1, backgroundColor: '#c42933' }}
+            contentStyle={buttonStyle}
+            onPress={() => navigation.navigate('Login')}
+          >
             <Text style={buttonTextStyle}>SIGN IN</Text>
           </Button>
           <View style={buttonDividerStyle} />
-          <Button full style={buttonStyle} onPress={() => navigation.navigate('Register')}>
+          <Button
+            mode="contained"
+            style={{ flex: 1, backgroundColor: '#c42933' }}
+            contentStyle={buttonStyle}
+            onPress={() => navigation.navigate('Register')}
+          >
             <Text style={buttonTextStyle}>SIGN UP</Text>
           </Button>
         </View>
-      </Container>
+      </View>
     </SafeAreaView>
   );
 };
 
 Landing.navigationOptions = () => {
   return {
+    headerBackTitle: null,
     headerTitle: () => null,
   };
 };
