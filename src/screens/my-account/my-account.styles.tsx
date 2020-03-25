@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F3F3',
   },
   contentStyle: {
-    flexGrow: 1,
+    // flexGrow: 1,
   },
   imageProfilePhoto: {
     width: 100,

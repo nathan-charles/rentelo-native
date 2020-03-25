@@ -1,14 +1,16 @@
 import React from 'react';
-import { Keyboard, ActivityIndicator, Alert, Image } from 'react-native';
+import { Keyboard, ActivityIndicator, Alert, Image, View, ScrollView } from 'react-native';
 import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
-import { Container, Content, View, ListItem, Text, Button } from 'native-base';
-import { Formik } from 'formik';
+import { Button, HelperText, Text, TextInput, Snackbar } from 'react-native-paper';
 import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useForm } from 'react-hook-form';
 import { ReactNativeFile } from 'apollo-upload-client';
 import * as yup from 'yup';
 // import ImagePicker from 'react-native-image-crop-picker';
 
 import { CURRENT_USER_QUERY, CurrentUserQueryData } from '../../shared/graphql/user/queries/current-user-query';
+
+import styles from './edit-item.styles';
 
 import {
   UPLOAD_FILE_MUTATION,
@@ -22,51 +24,23 @@ import {
   CreateItemMutationVariables,
 } from '../../shared/graphql/item/mutations/create-item-mutation';
 
-import { InputField, InputMaskField, HeaderButton } from '../../components';
+import { HeaderButton } from '../../components';
 import Attachments from './attachments';
 
-const validationSchema = yup.object().shape({
-  firstName: yup
+interface FormData {
+  name: string;
+  description: string;
+}
+
+const EditItemSchema = yup.object().shape({
+  name: yup // Name
     .string()
-    .label('First Name')
+    .label('Name')
     .required(),
-  lastName: yup
+  description: yup // Description
     .string()
-    .label('Last Name')
+    .label('Description')
     .required(),
-  dob: yup
-    .string()
-    .label('Date of Birth')
-    .required(),
-  ssn: yup
-    .string()
-    .label('SSN')
-    .required(),
-  email: yup
-    .string()
-    .label('Email')
-    .email()
-    .required(),
-  phone: yup
-    .string()
-    .label('Phone')
-    .required(),
-  bankRoutingNumber: yup
-    .string()
-    .label('Routing Number')
-    .required(),
-  bankAccountNumber: yup
-    .string()
-    .label('Account Number')
-    .required(),
-  bankAccountNumberVerify: yup
-    .string()
-    .label('Verify Account Number')
-    .required()
-    // .oneOf([yup.ref('bankAccountNumber'), null], 'Account number does not match')
-    .test('account-number-match', 'Account number does not match', function(value) {
-      return this.parent.bankAccountNumber === value;
-    }),
 });
 
 const moneyInputOptions = {
@@ -84,6 +58,10 @@ const EditItem: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ 
   // Fetch current user query hook
   const { data } = useQuery<CurrentUserQueryData>(CURRENT_USER_QUERY);
 
+  const { register, setValue, handleSubmit, errors } = useForm<FormData>({
+    validationSchema: EditItemSchema,
+  });
+
   if (data == undefined) {
     return null;
   }
@@ -98,6 +76,10 @@ const EditItem: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ 
 
   // Create Item Mutation Hook
   const [createItemMutation] = useMutation<CreateItemMutationData, CreateItemMutationVariables>(CREATE_ITEM_MUTATION);
+
+  const onSubmit = handleSubmit(({ name, description }) => {
+    console.log(name, description);
+  }); // firstName and lastName will have corre
 
   const handleAddAttachment = async () => {
     try {
@@ -130,136 +112,61 @@ const EditItem: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ 
     }
   };
 
+  // Destructure styles
+  const { containerStyle, contentStyle, formStyle, fieldStyle } = styles;
+
   return (
-    <Container>
-      <Content>
+    <View style={containerStyle}>
+      <ScrollView contentContainerStyle={contentStyle}>
         {/* <Image source={{ uri: imageSource }} style={{ width: 100, height: 100 }} /> */}
         {/* <Text style={{ fontSize: 10 }}>{fileData}</Text> */}
-        <Formik
-          initialValues={{
-            name: '',
-            description: '',
-            pricePerHour: undefined,
-            pricePerDay: undefined,
-            deposit: undefined,
-          }}
-          onSubmit={async (values, actions) => {
-            Keyboard.dismiss();
-            try {
-              const isNew = true;
-
-              const fields = {
-                name: values.name,
-                description: values.description,
-                pricePerHour: values.pricePerHour,
-                pricePerDay: values.pricePerDay,
-              };
-
-              if (isNew) {
-                await createItemMutation({
-                  variables: {
-                    fields: { ...fields, owner: { __type: 'Pointer', id: userObjectId, className: '_User' } },
-                  },
-                });
-              } else {
-                await createItemMutation({
-                  variables: {
-                    fields: { ...fields, owner: { __type: 'Pointer', id: userObjectId, className: '_User' } },
-                  },
-                });
-              }
-            } catch (error) {
-              console.log('Create Item Error', error);
-              actions.setFieldError('general', error.message);
-            } finally {
-              actions.setSubmitting(false);
-            }
-
-            // uploadFileMutation({ variables: { file: '' } });
-            // try {
-            //   delete values.bankAccountNumberVerify;
-            //   console.log('Create Merchant Account Payload', JSON.stringify(values));
-            //   await createPaymentAccountMutation({ variables: { input: values } });
-            // } catch (error) {
-            //   console.log('Create Merchant Account Error', error);
-            //   actions.setFieldError('general', error.message);
-            // } finally {
-            //   actions.setSubmitting(false);
-            // }
-          }}
-          validationSchema={validationSchema}
-        >
-          {formikProps => (
-            <React.Fragment>
-              <ListItem itemDivider>
-                <Text>PHOTOS</Text>
-              </ListItem>
-              <Attachments
-                attachments={[]}
-                onAddAttachment={handleAddAttachment}
-                // onSelectAttachment={this._showAttachmentOptions}
-              />
-              <ListItem itemDivider>
-                <Text>ABOUT</Text>
-              </ListItem>
-              <View padder>
-                <InputField
-                  label="Name"
-                  placeholder="Name of item"
-                  autoCorrect={false}
-                  autoCapitalize="sentences"
-                  formikProps={formikProps}
-                  formikKey="name"
-                />
-                <InputField
-                  multiline
-                  scrollEnabled={false}
-                  numberOfLines={4}
-                  label="Description"
-                  placeholder="Description of item"
-                  autoCorrect={false}
-                  autoCapitalize="sentences"
-                  formikProps={formikProps}
-                  formikKey="description"
-                />
-              </View>
-              <ListItem itemDivider>
-                <Text>PRICING</Text>
-              </ListItem>
-              <View padder>
-                <InputMaskField
-                  type="money"
-                  label="PER HOUR"
-                  keyboardType="number-pad"
-                  placeholder="0.0"
-                  options={moneyInputOptions}
-                  formikProps={formikProps}
-                  formikKey="pricePerHour"
-                />
-                <InputMaskField
-                  type="money"
-                  label="PER DAY"
-                  keyboardType="number-pad"
-                  placeholder="0.0"
-                  options={moneyInputOptions}
-                  formikProps={formikProps}
-                  formikKey="pricePerDay"
-                />
-                <InputMaskField
-                  type="money"
-                  label="DEPOSIT"
-                  options={moneyInputOptions}
-                  keyboardType="number-pad"
-                  placeholder="N/A"
-                  formikProps={formikProps}
-                  formikKey="deposit"
-                />
-              </View>
-            </React.Fragment>
-          )}
-        </Formik>
-      </Content>
-    </Container>
+        <View style={formStyle}>
+          <View style={fieldStyle}>
+            <TextInput
+              testID="input-name"
+              ref={() => register({ name: 'name' })}
+              mode="outlined"
+              selectionColor="#F63440"
+              label="Name"
+              placeholderTextColor="#F6868D"
+              autoCorrect={false}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              keyboardAppearance="dark"
+              onChangeText={(text) => setValue('name', text, true)}
+              error={!!errors.name}
+            />
+            {errors.name && (
+              <HelperText type="error" visible={!!errors.name}>
+                {errors.name.message}
+              </HelperText>
+            )}
+          </View>
+          <View style={fieldStyle}>
+            <TextInput
+              testID="input-description"
+              ref={() => register({ name: 'description' })}
+              mode="outlined"
+              selectionColor="#F63440"
+              label="Description"
+              placeholderTextColor="#F6868D"
+              autoCorrect={false}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              keyboardAppearance="dark"
+              onChangeText={(text) => setValue('description', text, true)}
+              error={!!errors.description}
+            />
+            {errors.description && (
+              <HelperText type="error" visible={!!errors.description}>
+                {errors.description.message}
+              </HelperText>
+            )}
+          </View>
+          <Text>{JSON.stringify(errors, null, 2)}</Text>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 

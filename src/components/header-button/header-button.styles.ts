@@ -1,13 +1,16 @@
 import { StyleSheet } from 'react-native';
 
-import colors from '../../../src/config/colors';
+import theme from '../../config/theme';
 
 const styles = StyleSheet.create({
+  containerStyle: {
+    paddingHorizontal: theme.spacing.gutter,
+  },
   buttonStyle: {
     backgroundColor: '#FFF',
   },
   buttonDarkStyle: {
-    backgroundColor: colors.primaryColor2,
+    backgroundColor: theme.colors.primaryDark,
   },
   textStyle: {
     color: '#000',

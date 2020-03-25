@@ -23,27 +23,20 @@ const MyAccount: NavigationStackScreenComponent<NavigationStackScreenProps> = ({
   const { data: currentUserData } = useQuery<CurrentUserQueryData>(CURRENT_USER_QUERY);
 
   // Logout Mutation Hook
-  const [logOutMutation] = useMutation(LOGOUT_MUTATION);
+  const [logOutMutation] = useMutation(LOGOUT_MUTATION, {
+    onCompleted: async () => {
+      // Remove session token in AsyncStorage
+      await AsyncStorage.removeItem('token');
+
+      // Navigate to Login / Landing
+      navigation.navigate('LoginRegistration');
+    },
+  });
 
   const handleLogout = async () => {
     try {
       // Call LogOut Mutation
-      const result = await logOutMutation();
-
-      if (result) {
-        const { data } = result;
-        if (data) {
-          console.log('Data', data);
-
-          // console.log(sessionToken);
-
-          // Remove session token in AsyncStorage
-          await AsyncStorage.removeItem('token');
-
-          // Navigate to Login / Landing
-          navigation.navigate('LoginRegistration');
-        }
-      }
+      logOutMutation();
     } catch (error) {
       console.log(error);
 

@@ -15,6 +15,7 @@ import {
 
 import { InputField, InputMaskField, HeaderButton } from '../../components';
 
+// prettier-ignore
 const validationSchema = yup.object().shape({
   firstName: yup
     .string()
@@ -150,7 +151,7 @@ const SetupMerchantAccount: NavigationStackScreenComponent<NavigationStackScreen
           }}
           validationSchema={validationSchema}
         >
-          {formikProps => (
+          {(formikProps) => (
             <React.Fragment>
               <ListItem itemDivider>
                 <Text>PERSONAL INFORMATION</Text>

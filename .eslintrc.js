@@ -6,7 +6,7 @@ module.exports =  {
       'plugin:@typescript-eslint/recommended',  // Uses the recommended rules from @typescript-eslint/eslint-plugin
       'plugin:react/recommended',  // Uses the recommended rules from @eslint-plugin-react
       'plugin:prettier/recommended',  // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
-      // 'prettier/react', // disables react-specific linting rules that conflict with prettier
+      'prettier/react', // disables react-specific linting rules that conflict with prettier
       'prettier/@typescript-eslint',
     ],
     parserOptions:  {

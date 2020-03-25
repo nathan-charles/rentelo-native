@@ -6,7 +6,12 @@ const theme = {
   colors: {
     ...DefaultTheme.colors,
     primary: '#F63440',
+    primaryDark: '#c42933', // Custom
     accent: '#FFF',
+  },
+  spacing: {
+    gutter: 10,
+    vertical: 10,
   },
 };
 
