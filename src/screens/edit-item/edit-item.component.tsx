@@ -130,8 +130,8 @@ const EditItem: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ 
               label="Name"
               placeholderTextColor="#F6868D"
               autoCorrect={false}
-              autoCapitalize="none"
-              keyboardType="email-address"
+              autoCapitalize="words"
+              keyboardType="default"
               keyboardAppearance="dark"
               onChangeText={(text) => setValue('name', text, true)}
               error={!!errors.name}
@@ -151,8 +151,8 @@ const EditItem: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ 
               label="Description"
               placeholderTextColor="#F6868D"
               autoCorrect={false}
-              autoCapitalize="none"
-              keyboardType="email-address"
+              autoCapitalize="sentences"
+              keyboardType="default"
               keyboardAppearance="dark"
               onChangeText={(text) => setValue('description', text, true)}
               error={!!errors.description}
