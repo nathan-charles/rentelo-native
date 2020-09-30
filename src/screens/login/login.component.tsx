@@ -9,62 +9,68 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import { Button, Text, TextInput, Snackbar } from 'react-native-paper';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
-import theme from './../../config/theme';
+import { LoginNavigationProp } from '../../navigation';
 import {
   LOGIN_MUTATION,
   LoginMutationData,
   LoginMutationVariables,
 } from '../../shared/graphql/user/mutations/login-mutation';
+import {
+  CURRENT_USER_IS_LOGGED_IN_QUERY,
+  CurrentUserQueryData,
+} from '../../shared/graphql/user/queries/current-user-query';
+
+import theme from './../../config/theme';
 import styles from './login.styles';
 
-const Login: NavigationStackScreenComponent<NavigationStackScreenProps> = ({ navigation }) => {
+interface Props {
+  navigation: LoginNavigationProp;
+}
+
+const Login: React.FC<Props> = ({ navigation }) => {
   // State
-  const [error, setError] = React.useState<string>(undefined);
-  const [username, setUsername] = React.useState<string>('');
-  const [password, setPassword] = React.useState<string>('');
+  const [error, setError] = React.useState<string | undefined>(undefined);
+  const [username, setUsername] = React.useState<string>('nathan.charles@me.com');
+  const [password, setPassword] = React.useState<string>('Addy7211');
 
   // Login Mutation Hook
-  const [logInMutation, { loading }] = useMutation<LoginMutationData, LoginMutationVariables>(LOGIN_MUTATION);
+  const [logInMutation, { loading }] = useMutation<LoginMutationData, LoginMutationVariables>(LOGIN_MUTATION, {
+    update: (cache, { data }) => {
+      cache.writeQuery<CurrentUserQueryData>({
+        query: CURRENT_USER_IS_LOGGED_IN_QUERY,
+        data: { viewer: { isLoggedIn: true } },
+      });
+    },
+    onCompleted: async (data) => {
+      const {
+        logIn: {
+          viewer: { sessionToken },
+        },
+      } = data;
+
+      console.log(sessionToken);
+
+      // Set session token in AsyncStorage
+      await AsyncStorage.setItem('token', sessionToken);
+    },
+    onError: (error) => {
+      console.log(error);
+      // setError(error.graphQLErrors[0].message);
+    },
+  });
 
   const handleLogin = async () => {
-    // Dismiss Keyboard
     Keyboard.dismiss();
 
-    try {
-      // Call LogIn Mutation
-      const result = await logInMutation({
-        variables: {
-          username: username.toLowerCase().trim(),
-          password,
-        },
-      });
-
-      if (result) {
-        const { data } = result;
-        if (data) {
-          console.log('Data', data);
-          const {
-            logIn: {
-              viewer: { sessionToken },
-            },
-          } = data;
-
-          console.log(sessionToken);
-
-          // Set session token in AsyncStorage
-          await AsyncStorage.setItem('token', sessionToken);
-
-          // Navigate to App
-          navigation.navigate('TabNavigation');
-        }
-      }
-    } catch (error) {
-      setError(error.graphQLErrors[0].message);
-    }
+    logInMutation({
+      variables: {
+        username: username.toLowerCase().trim(),
+        password,
+      },
+    });
   };
 
   // Destructure styles

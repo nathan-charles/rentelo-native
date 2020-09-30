@@ -1,23 +1,21 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
-import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloProvider } from '@apollo/client';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { Root } from 'native-base';
 
-import client from './shared/graphql/client';
-import RenteloAppContainer from '../src/routes';
+import client from '@app-shared/graphql/client';
+import theme from '@app-config/theme';
+import { AppNavigator } from './navigation';
 
-import theme from './config/theme';
-
-const App: React.FC = () => (
-  <ApolloProvider client={client}>
-    <PaperProvider theme={theme}>
-      <Root>
+const App: React.FC = () => {
+  return (
+    <ApolloProvider client={client}>
+      <PaperProvider theme={theme}>
         <StatusBar barStyle="light-content" />
-        <RenteloAppContainer />
-      </Root>
-    </PaperProvider>
-  </ApolloProvider>
-);
+        <AppNavigator />
+      </PaperProvider>
+    </ApolloProvider>
+  );
+};
 
 export default App;

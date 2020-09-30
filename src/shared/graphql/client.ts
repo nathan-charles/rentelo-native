@@ -1,21 +1,47 @@
 import { AsyncStorage } from 'react-native';
-import { ApolloClient } from 'apollo-client';
+import { gql, ApolloClient, InMemoryCache } from '@apollo/client';
+import { onError } from '@apollo/link-error';
+import { setContext } from '@apollo/link-context';
 import { createUploadLink } from 'apollo-upload-client';
-import { setContext } from 'apollo-link-context';
-import { InMemoryCache } from 'apollo-cache-inmemory';
 
-const uploadLink = createUploadLink({
-  uri: 'https://parseapi.back4app.com/graphql',
-  headers: {
-    'X-Parse-Application-Id': 'tfFOAtl6bvnf8pGohYVw0fH9yT0J3OpfCKad8NRp',
-    'X-Parse-Client-Key': '3c8dJWJXe1Kb9TXLkMkkgzJ5bc3BiaLZGPL3QDTS',
+// import { typeDefs, resolvers } from './resolvers';
+import { CURRENT_USER_QUERY } from './user/queries/current-user-query';
+
+const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        viewer: {
+          merge: true,
+        },
+      },
+    },
   },
 });
 
+// cache.writeQuery({
+//   query: CURRENT_USER_QUERY,
+//   data: {
+//     // isLoggedIn: !!AsyncStorage.getItem('token'),
+//     viewer: {
+//       // sessionToken: async () => await AsyncStorage.getItem('token'),
+//       // isLoggedIn: false,//!!AsyncStorage.getItem('token'),
+//     },
+//   },
+// });
+
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    graphQLErrors.map(({ message, locations, path }) =>
+      console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
+    );
+  }
+
+  if (networkError) console.log(`[Network error]: ${networkError}`);
+});
+
 const authLink = setContext(async (_, { headers }) => {
-  // get the authentication token from local storage if it exists
   const token = await AsyncStorage.getItem('token');
-  // return the headers to the context so httpLink can read them
 
   if (token) {
     return {
@@ -33,9 +59,25 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
-const client = new ApolloClient({
-  link: authLink.concat(uploadLink),
-  cache: new InMemoryCache(),
+const uploadLink = createUploadLink({
+  uri: 'https://parseapi.back4app.com/graphql',
+  headers: {
+    'X-Parse-Application-Id': 'tfFOAtl6bvnf8pGohYVw0fH9yT0J3OpfCKad8NRp',
+    'X-Parse-Client-Key': '3c8dJWJXe1Kb9TXLkMkkgzJ5bc3BiaLZGPL3QDTS',
+  },
 });
+
+export const typeDefs = gql`
+  extend type Viewer {
+    isLoggedIn: Boolean!
+  }
+  extend type Query {
+    viewer: Viewer!
+  }
+`;
+
+const link = errorLink.concat(authLink).concat(uploadLink);
+
+const client = new ApolloClient({ cache, link, typeDefs });
 
 export default client;

@@ -3,7 +3,7 @@ import { Keyboard, ActivityIndicator } from 'react-native';
 import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import { Container, Content, View, ListItem, Text, Button } from 'native-base';
 import { Formik } from 'formik';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import * as yup from 'yup';
 
 import {

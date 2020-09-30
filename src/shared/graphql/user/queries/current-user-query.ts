@@ -9,7 +9,8 @@ export interface ExternalAccount {
 
 export interface CurrentUserQueryData {
   viewer: {
-    user: {
+    isLoggedIn: boolean;
+    user?: {
       id: string;
       username: string;
       payoutAccount: {
@@ -27,9 +28,18 @@ export interface CurrentUserQueryData {
   };
 }
 
-const CURRENT_USER_QUERY = gql`
+export const CURRENT_USER_IS_LOGGED_IN_QUERY = gql`
+  query CurrentUserIsLoggedInQuery {
+    viewer {
+      isLoggedIn @client
+    }
+  }
+`;
+
+export const CURRENT_USER_QUERY = gql`
   query CurrentUserQuery {
     viewer {
+      isLoggedIn @client
       user {
         id
         username
@@ -48,5 +58,3 @@ const CURRENT_USER_QUERY = gql`
     }
   }
 `;
-
-export { CURRENT_USER_QUERY };
