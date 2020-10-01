@@ -3,13 +3,13 @@ import { AsyncStorage, StatusBar, SafeAreaView, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { useLazyQuery, useApolloClient } from '@apollo/client';
 
-import Route from '@app-navigation/route';
-import { LandingNavigationProp } from '@app-navigation/authentication.navigator';
+import Route from '../../navigation/route';
+import { LandingNavigationProp } from '../../navigation';
 import {
   IS_LOGGED_IN_QUERY,
   CURRENT_USER_QUERY,
   CurrentUserQueryData,
-} from '@app-shared/graphql/user/queries/current-user-query';
+} from '../../shared/graphql/user/queries/current-user-query';
 import styles from './landing.styles';
 
 type Props = {
@@ -27,7 +27,6 @@ const Landing: React.FC<Props> = ({ navigation }) => {
       // await AsyncStorage.removeItem('token');
       const token = await AsyncStorage.getItem('token');
       if (token) {
-        console.log('Found Token', token);
         apolloClient.writeQuery({
           query: IS_LOGGED_IN_QUERY,
           data: { viewer: { isLoggedIn: true } },
