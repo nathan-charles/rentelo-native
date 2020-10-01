@@ -1,11 +1,15 @@
 import React, { useEffect } from 'react';
 import { AsyncStorage, StatusBar, SafeAreaView, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useApolloClient } from '@apollo/client';
 
 import Route from '@app-navigation/route';
 import { LandingNavigationProp } from '@app-navigation/authentication.navigator';
-import { CURRENT_USER_QUERY, CurrentUserQueryData } from '@app-shared/graphql/user/queries/current-user-query';
+import {
+  IS_LOGGED_IN_QUERY,
+  CURRENT_USER_QUERY,
+  CurrentUserQueryData,
+} from '@app-shared/graphql/user/queries/current-user-query';
 import styles from './landing.styles';
 
 type Props = {
@@ -13,28 +17,29 @@ type Props = {
 };
 
 const Landing: React.FC<Props> = ({ navigation }) => {
+  const apolloClient = useApolloClient();
+
   // Fetch current user query hook
-  const [executeCurrentUserQuery, { loading, data }] = useLazyQuery<CurrentUserQueryData>(CURRENT_USER_QUERY, {
-    // fetchPolicy: 'cache-and-network',
-  });
+  const [executeCurrentUserQuery] = useLazyQuery<CurrentUserQueryData>(CURRENT_USER_QUERY);
 
   useEffect(() => {
     const fetchCurrentUserAsync = async () => {
+      // await AsyncStorage.removeItem('token');
       const token = await AsyncStorage.getItem('token');
       if (token) {
+        console.log('Found Token', token);
+        apolloClient.writeQuery({
+          query: IS_LOGGED_IN_QUERY,
+          data: { viewer: { isLoggedIn: true } },
+        });
         executeCurrentUserQuery();
+      } else {
+        apolloClient.resetStore();
       }
     };
 
     fetchCurrentUserAsync();
   }, []);
-
-  // useEffect(() => {
-  //   if (loading === false && data) {
-  //     console.log(data);
-  //     data.viewer && navigation.navigate('TabNavigation');
-  //   }
-  // }, [loading, data]);
 
   // Destructure styles
   const {

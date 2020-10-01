@@ -28,8 +28,8 @@ export interface CurrentUserQueryData {
   };
 }
 
-export const CURRENT_USER_IS_LOGGED_IN_QUERY = gql`
-  query CurrentUserIsLoggedInQuery {
+export const IS_LOGGED_IN_QUERY = gql`
+  query IsLoggedInQuery {
     viewer {
       isLoggedIn @client
     }
@@ -39,7 +39,6 @@ export const CURRENT_USER_IS_LOGGED_IN_QUERY = gql`
 export const CURRENT_USER_QUERY = gql`
   query CurrentUserQuery {
     viewer {
-      isLoggedIn @client
       user {
         id
         username

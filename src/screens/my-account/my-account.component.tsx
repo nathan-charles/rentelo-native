@@ -3,9 +3,13 @@ import { AsyncStorage, ScrollView, View } from 'react-native';
 import { NavigationStackScreenComponent, NavigationStackScreenProps } from 'react-navigation-stack';
 import { Button, Divider, List, Text } from 'react-native-paper';
 // import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import { useQuery, useMutation, useApolloClient } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 
-import { CURRENT_USER_QUERY, CurrentUserQueryData } from '../../shared/graphql/user/queries/current-user-query';
+import {
+  IS_LOGGED_IN_QUERY,
+  CURRENT_USER_QUERY,
+  CurrentUserQueryData,
+} from '../../shared/graphql/user/queries/current-user-query';
 import { LOGOUT_MUTATION } from '../../shared/graphql/user/mutations/logout-mutation';
 
 import colors from '../../../src/config/colors';
@@ -22,22 +26,13 @@ const MyAccount: NavigationStackScreenComponent<NavigationStackScreenProps> = ({
   // Fetch current user query hook
   const { data: currentUserData } = useQuery<CurrentUserQueryData>(CURRENT_USER_QUERY);
 
-  const client = useApolloClient();
-
   // Logout Mutation Hook
   const [logOutMutation] = useMutation(LOGOUT_MUTATION, {
-    update: (cache) => {
-      // cache.writeQuery({ query: CURRENT_USER_QUERY, data: { isLoggedIn: false } });
-      // cache.writeQuery<CurrentUserQueryData>({
-      //   query: CURRENT_USER_QUERY,
-      //   data: { viewer: { isLoggedIn: false } },
-      // });
+    update: async (cache) => {
+      cache.writeQuery({ query: IS_LOGGED_IN_QUERY, data: { viewer: { isLoggedIn: false } } });
     },
     onCompleted: async () => {
-      // Remove session token in AsyncStorage
       AsyncStorage.removeItem('token');
-      client.resetStore();
-      client.clearStore();
     },
   });
 

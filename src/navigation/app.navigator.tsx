@@ -3,10 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useQuery } from '@apollo/client';
 
-import {
-  CURRENT_USER_IS_LOGGED_IN_QUERY,
-  CurrentUserQueryData,
-} from '../shared/graphql/user/queries/current-user-query';
+import { IS_LOGGED_IN_QUERY, CurrentUserQueryData } from '../shared/graphql/user/queries/current-user-query';
 
 // import Route from './route';
 import AuthenticationNavigator from './authentication.navigator';
@@ -25,7 +22,7 @@ const AppNavigator: React.FC<Partial<StackNavigatorProps>> = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   // Fetch current user query hook
-  const { data: currentUserData } = useQuery<CurrentUserQueryData>(CURRENT_USER_IS_LOGGED_IN_QUERY);
+  const { data: currentUserData } = useQuery<CurrentUserQueryData>(IS_LOGGED_IN_QUERY, { fetchPolicy: 'cache-only' });
 
   useEffect(() => {
     console.log('currentUserData', currentUserData);

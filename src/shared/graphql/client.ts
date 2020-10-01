@@ -5,9 +5,9 @@ import { setContext } from '@apollo/link-context';
 import { createUploadLink } from 'apollo-upload-client';
 
 // import { typeDefs, resolvers } from './resolvers';
-import { CURRENT_USER_QUERY } from './user/queries/current-user-query';
+import { CURRENT_USER_QUERY, CURRENT_USER_IS_LOGGED_IN_QUERY } from './user/queries/current-user-query';
 
-const cache = new InMemoryCache({
+export const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
@@ -18,17 +18,6 @@ const cache = new InMemoryCache({
     },
   },
 });
-
-// cache.writeQuery({
-//   query: CURRENT_USER_QUERY,
-//   data: {
-//     // isLoggedIn: !!AsyncStorage.getItem('token'),
-//     viewer: {
-//       // sessionToken: async () => await AsyncStorage.getItem('token'),
-//       // isLoggedIn: false,//!!AsyncStorage.getItem('token'),
-//     },
-//   },
-// });
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -70,9 +59,6 @@ const uploadLink = createUploadLink({
 export const typeDefs = gql`
   extend type Viewer {
     isLoggedIn: Boolean!
-  }
-  extend type Query {
-    viewer: Viewer!
   }
 `;
 

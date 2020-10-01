@@ -18,10 +18,7 @@ import {
   LoginMutationData,
   LoginMutationVariables,
 } from '../../shared/graphql/user/mutations/login-mutation';
-import {
-  CURRENT_USER_IS_LOGGED_IN_QUERY,
-  CurrentUserQueryData,
-} from '../../shared/graphql/user/queries/current-user-query';
+import { IS_LOGGED_IN_QUERY } from '../../shared/graphql/user/queries/current-user-query';
 
 import theme from './../../config/theme';
 import styles from './login.styles';
@@ -38,9 +35,9 @@ const Login: React.FC<Props> = ({ navigation }) => {
 
   // Login Mutation Hook
   const [logInMutation, { loading }] = useMutation<LoginMutationData, LoginMutationVariables>(LOGIN_MUTATION, {
-    update: (cache, { data }) => {
-      cache.writeQuery<CurrentUserQueryData>({
-        query: CURRENT_USER_IS_LOGGED_IN_QUERY,
+    update: (cache) => {
+      cache.writeQuery({
+        query: IS_LOGGED_IN_QUERY,
         data: { viewer: { isLoggedIn: true } },
       });
     },
@@ -57,8 +54,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
       await AsyncStorage.setItem('token', sessionToken);
     },
     onError: (error) => {
-      console.log(error);
-      // setError(error.graphQLErrors[0].message);
+      setError(error.graphQLErrors[0].message);
     },
   });
 
